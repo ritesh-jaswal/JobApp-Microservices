@@ -25,13 +25,13 @@ public class JobController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable Long id)
+    public ResponseEntity<JobCompanyDto> getJobById(@PathVariable Long id)
     {
-        Job job = jobService.getJobById(id);
+        JobCompanyDto jobCompanyDto = jobService.getJobById(id);
 
-        if(job != null)
+        if(jobCompanyDto != null)
         {
-            return new ResponseEntity<>(job, HttpStatus.OK);
+            return new ResponseEntity<>(jobCompanyDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

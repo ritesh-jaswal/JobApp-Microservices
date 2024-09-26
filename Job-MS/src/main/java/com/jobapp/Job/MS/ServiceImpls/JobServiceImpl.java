@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,25 +20,15 @@ public class JobServiceImpl implements JobService
     @Autowired
     private JobRepo jobRepo;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Override
     public List<JobCompanyDto> findAll()
     {
         List<Job> jobs = jobRepo.findAll();
 
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
-    }
-
-    private JobCompanyDto convertToDto(Job job)
-    {
-        RestTemplate restTemplate = new RestTemplate();
-
-        JobCompanyDto jobCompanyDto = new JobCompanyDto();
-        jobCompanyDto.setJob(job);
-
-        Company company = restTemplate.getForObject("http://localhost:8083/companies/"+job.getCompanyId(),Company.class);
-        jobCompanyDto.setCompany(company);
-
-        return jobCompanyDto;
     }
 
     @Override
@@ -49,9 +38,10 @@ public class JobServiceImpl implements JobService
     }
 
     @Override
-    public Job getJobById(Long id)
+    public JobCompanyDto getJobById(Long id)
     {
-       return jobRepo.findById(id).orElse(null);
+       Job job = jobRepo.findById(id).orElse(null);
+       return convertToDto(job);
     }
 
     @Override
@@ -85,5 +75,16 @@ public class JobServiceImpl implements JobService
             return true;
         }
         return false;
+    }
+
+    private JobCompanyDto convertToDto(Job job)
+    {
+        JobCompanyDto jobCompanyDto = new JobCompanyDto();
+        jobCompanyDto.setJob(job);
+
+        Company company = restTemplate.getForObject("http://Company-MS:8083/companies/"+job.getCompanyId(),Company.class);
+        jobCompanyDto.setCompany(company);
+
+        return jobCompanyDto;
     }
 }
