@@ -1,6 +1,7 @@
 package com.jobapp.Job.MS.Controllers;
 
 
+import com.jobapp.Job.MS.Models.External.Dto.JobCompanyDto;
 import com.jobapp.Job.MS.Models.Job;
 import com.jobapp.Job.MS.Services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class JobController
     private JobService jobService;
 
     @GetMapping
-    public ResponseEntity<List<Job>> findAll()
+    public ResponseEntity<List<JobCompanyDto>> findAll()
     {
         return new ResponseEntity<>(jobService.findAll(),HttpStatus.OK);
     }
