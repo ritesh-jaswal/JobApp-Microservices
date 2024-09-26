@@ -1,7 +1,7 @@
 package com.jobapp.Job.MS.Controllers;
 
 
-import com.jobapp.Job.MS.Models.External.Dto.JobCompanyDto;
+import com.jobapp.Job.MS.Models.External.Dto.JobDto;
 import com.jobapp.Job.MS.Models.Job;
 import com.jobapp.Job.MS.Services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +19,19 @@ public class JobController
     private JobService jobService;
 
     @GetMapping
-    public ResponseEntity<List<JobCompanyDto>> findAll()
+    public ResponseEntity<List<JobDto>> findAll()
     {
         return new ResponseEntity<>(jobService.findAll(),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobCompanyDto> getJobById(@PathVariable Long id)
+    public ResponseEntity<JobDto> getJobById(@PathVariable Long id)
     {
-        JobCompanyDto jobCompanyDto = jobService.getJobById(id);
+        JobDto jobDto = jobService.getJobById(id);
 
-        if(jobCompanyDto != null)
+        if(jobDto != null)
         {
-            return new ResponseEntity<>(jobCompanyDto, HttpStatus.OK);
+            return new ResponseEntity<>(jobDto, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
