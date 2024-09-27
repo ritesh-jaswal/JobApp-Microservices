@@ -1,6 +1,8 @@
 package com.jobapp.Job.MS.ServiceImpls;
 
 
+import com.jobapp.Job.MS.FeignClients.CompanyFeignClient;
+import com.jobapp.Job.MS.FeignClients.ReviewFeignClient;
 import com.jobapp.Job.MS.Mappers.JobMapper;
 import com.jobapp.Job.MS.Models.External.Dto.JobDto;
 import com.jobapp.Job.MS.Models.External.Review;
@@ -27,6 +29,12 @@ public class JobServiceImpl implements JobService
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private CompanyFeignClient companyClient;
+
+    @Autowired
+    private ReviewFeignClient reviewClient;
 
     @Override
     public List<JobDto> findAll()
@@ -86,11 +94,9 @@ public class JobServiceImpl implements JobService
     {
         JobDto jobDto;
 
-        Company company = restTemplate.getForObject("http://Company-MS:8083/companies/"+job.getCompanyId(),Company.class);
+        Company company = this.companyClient.getCompany(job.getCompanyId());
 
-        ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange("http://Review-MS:8084/reviews?companyId=" + job.getCompanyId(),
-                HttpMethod.GET, null, new ParameterizedTypeReference<List<Review>>() {});
-        List<Review> reviews = reviewResponse.getBody();
+        List<Review> reviews = this.reviewClient.getReviews(job.getCompanyId());
 
         jobDto = JobMapper.mapToJobCompanyDto(job,company,reviews);
 
