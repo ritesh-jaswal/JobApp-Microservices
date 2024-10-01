@@ -10,6 +10,7 @@ import com.jobapp.Job.MS.Models.Job;
 import com.jobapp.Job.MS.Models.External.Company;
 import com.jobapp.Job.MS.Repositories.JobRepo;
 import com.jobapp.Job.MS.Services.JobService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -37,6 +38,7 @@ public class JobServiceImpl implements JobService
     private ReviewFeignClient reviewClient;
 
     @Override
+    @CircuitBreaker(name = "companyBreaker")
     public List<JobDto> findAll()
     {
         List<Job> jobs = jobRepo.findAll();
