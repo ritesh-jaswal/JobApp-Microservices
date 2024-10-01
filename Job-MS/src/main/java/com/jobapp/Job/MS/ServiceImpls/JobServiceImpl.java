@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,12 +39,19 @@ public class JobServiceImpl implements JobService
     private ReviewFeignClient reviewClient;
 
     @Override
-    @CircuitBreaker(name = "companyBreaker")
+    @CircuitBreaker(name = "companyBreaker",fallbackMethod = "companyBreakerFallback")
     public List<JobDto> findAll()
     {
         List<Job> jobs = jobRepo.findAll();
 
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public List<String> companyBreakerFallback(Exception e)
+    {
+        List<String> list = new ArrayList<>();
+        list.add("Dummy");
+        return list;
     }
 
     @Override
