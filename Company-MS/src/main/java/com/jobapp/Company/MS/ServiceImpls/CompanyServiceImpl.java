@@ -1,9 +1,12 @@
 package com.jobapp.Company.MS.ServiceImpls;
 
 
+import com.jobapp.Company.MS.MessageQueue.Dto.ReviewMessage;
+import com.jobapp.Company.MS.MessageQueue.FeignClient.ReviewClient;
 import com.jobapp.Company.MS.Models.Company;
 import com.jobapp.Company.MS.Repositories.CompanyRepo;
 import com.jobapp.Company.MS.Services.CompanyService;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,9 @@ public class CompanyServiceImpl implements CompanyService
 {
     @Autowired
     private CompanyRepo companyRepo;
+
+    @Autowired
+    private ReviewClient reviewClient;
 
     @Override
     public List<Company> getAllCompanies()
@@ -62,5 +68,14 @@ public class CompanyServiceImpl implements CompanyService
         {
             return false;
         }
+    }
+
+    @Override
+    public void updateCompanyRating(ReviewMessage reviewMessage)
+    {
+        Company company = companyRepo.findById(reviewMessage.getCompanyId()).orElseThrow(()->new NotFoundException("Company not found by id"+reviewMessage.getCompanyId()));
+        Double averageRating = reviewClient.getAverageRatingForCompany(reviewMessage.getCompanyId());
+        company.setRating(averageRating);
+        companyRepo.save(company);
     }
 }

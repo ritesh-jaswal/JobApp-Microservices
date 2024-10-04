@@ -1,5 +1,6 @@
 package com.jobapp.Review.MS.Controllers;
 
+import com.jobapp.Review.MS.MessageQueue.ReviewMessageProducer;
 import com.jobapp.Review.MS.Models.Review;
 import com.jobapp.Review.MS.Services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class ReviewController
 {
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ReviewMessageProducer messageProducer;
 
     @GetMapping
     public ResponseEntity<List<Review>> getAllReviewsByCompany(@RequestParam Long companyId)
@@ -36,6 +40,7 @@ public class ReviewController
         boolean saved = reviewService.createReview(companyId,review);
         if(saved)
         {
+            messageProducer.sendMessage(review );
             return new ResponseEntity<>("Review Added Successfully",HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,5 +67,12 @@ public class ReviewController
             return new ResponseEntity<>("Review Deleted Successfully",HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/averageRating")
+    public Double getAverageOfReviews(@RequestParam Long companyId)
+    {
+        List<Review> reviews = reviewService.findAll(companyId);
+        return reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
     }
 }

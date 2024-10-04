@@ -2,6 +2,7 @@ package com.jobapp.Company.MS.Services;
 
 
 
+import com.jobapp.Company.MS.MessageQueue.Dto.ReviewMessage;
 import com.jobapp.Company.MS.Models.Company;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface CompanyService
     void createCompany(Company company);
     Company getCompanyById(Long id);
     boolean deleteCompany(Long id);
+
+    public void updateCompanyRating(ReviewMessage reviewMessage);
 }

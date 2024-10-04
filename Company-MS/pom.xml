@@ -80,6 +80,17 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 
+<!--		ADDED FEIGN CLIENT TO SAVE AVERAGE OF REVIEWS IN COMPANY-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<!--		DEPENDENCY FOR RABBITMQ-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
